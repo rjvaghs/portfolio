@@ -1,22 +1,30 @@
 {
-  "name": "ai-data-portfolio",
-  "version": "1.0.0",
+  "name": "carbonhuedata-app",
   "private": true,
-  "description": "A tech-themed, interactive React portfolio for a Data & AI Engineer, designed for static hosting on GitHub Pages.",
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "npx serve .",
-    "build": "echo \"Static React (CDN) site - no bundler build step required\"",
-    "deploy": "echo \"Deploy by pushing this folder to a GitHub Pages repository (see README.md)\""
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
-  "keywords": [
-    "portfolio",
-    "react",
-    "data-engineering",
-    "ai",
-    "github-pages"
-  ],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/node": "^24.12.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.56.1",
+    "vite": "^8.0.0"
+  }
 }
