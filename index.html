@@ -1,0 +1,955 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Data &amp; AI Consultant Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Data &amp; AI Engineer &amp; Consultant portfolio – complex projects, client impact, and production-grade solutions."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <!-- React 18 + ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for in-browser JSX transform -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body class="body body--dark">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useMemo } = React;
+
+      // ---- Data layer ----
+
+      const SKILL_CATEGORIES = [
+        {
+          id: 'data-eng',
+          label: 'Data Engineering',
+          items: [
+            {
+              name: 'Spark / Databricks',
+              level: 'Advanced',
+              useCase: 'Batch & streaming pipelines, optimization, Delta Lake.'
+            },
+            {
+              name: 'SQL & Data Warehousing',
+              level: 'Advanced',
+              useCase: 'Dimensional models, ELT, analytics-ready schemas.'
+            },
+            {
+              name: 'Airflow / Orchestration',
+              level: 'Intermediate',
+              useCase: 'End-to-end pipeline scheduling, monitoring, SLAs.'
+            }
+          ]
+        },
+        {
+          id: 'ml-ai',
+          label: 'ML & AI',
+          items: [
+            {
+              name: 'Python ML Stack',
+              level: 'Advanced',
+              useCase: 'scikit-learn, PyTorch/TF for classical & deep learning.'
+            },
+            {
+              name: 'MLOps',
+              level: 'Intermediate',
+              useCase: 'Model versioning, feature stores, CI/CD for ML.'
+            },
+            {
+              name: 'GenAI',
+              level: 'Intermediate',
+              useCase: 'LLM-powered assistants, RAG, prompt engineering.'
+            }
+          ]
+        },
+        {
+          id: 'cloud',
+          label: 'Cloud & Platforms',
+          items: [
+            {
+              name: 'Azure / AWS',
+              level: 'Advanced',
+              useCase: 'End-to-end data & AI workloads in the cloud.'
+            },
+            {
+              name: 'Containers',
+              level: 'Intermediate',
+              useCase: 'Dockerized services, reproducible ML pipelines.'
+            }
+          ]
+        },
+        {
+          id: 'analytics',
+          label: 'Analytics & BI',
+          items: [
+            {
+              name: 'Power BI / Tableau',
+              level: 'Advanced',
+              useCase: 'Executive dashboards, self-service analytics.'
+            },
+            {
+              name: 'Experimentation',
+              level: 'Intermediate',
+              useCase: 'A/B testing, KPI definition and tracking.'
+            }
+          ]
+        },
+        {
+          id: 'consulting',
+          label: 'Consulting',
+          items: [
+            {
+              name: 'Stakeholder Alignment',
+              level: 'Advanced',
+              useCase: 'Translating business goals into data & AI roadmaps.'
+            },
+            {
+              name: 'Discovery Workshops',
+              level: 'Advanced',
+              useCase: 'Clarifying requirements, scoping MVPs and phases.'
+            },
+            {
+              name: 'Storytelling with Data',
+              level: 'Advanced',
+              useCase: 'Executive-ready narratives focused on impact.'
+            }
+          ]
+        }
+      ];
+
+      const CASE_STUDIES = [
+        {
+          id: 'retail-demand-forecasting',
+          title: 'Retail Demand Forecasting Platform',
+          context:
+            'Global retailer struggling with stockouts and overstock across hundreds of stores and DCs.',
+          role: 'Lead Data & AI Engineer',
+          stack: ['Azure', 'Databricks', 'Delta Lake', 'MLflow', 'Power BI'],
+          metrics: [
+            { label: 'Forecast error', before: '18%', after: '7%' },
+            { label: 'Working capital tied in stock', before: '100%', after: '85%' },
+            { label: 'Planning cycle time', before: '5 days', after: '1 day' }
+          ],
+          problem:
+            'Manual spreadsheets and siloed data sources made demand planning reactive, inconsistent, and hard to scale.',
+          approach:
+            'Designed a unified lakehouse, automated data pipelines, and an ML forecasting service exposed via APIs and dashboards.',
+          solution:
+            'Production-grade pipelines powering daily forecasts by segment and region, consumed by planners through BI dashboards.',
+          impact:
+            'Reduced stockouts, freed working capital, and gave planners a single, trusted source for demand decisions.'
+        },
+        {
+          id: 'subscription-churn',
+          title: 'Subscription Churn Early-Warning System',
+          context: 'B2B SaaS provider wanted to move from reactive churn analysis to proactive retention.',
+          role: 'Data & ML Engineer',
+          stack: ['AWS', 'Python', 'scikit-learn', 'Airflow', 'Looker'],
+          metrics: [
+            { label: 'Churn in target segment', before: '11%', after: '7%' },
+            { label: 'Time-to-signal', before: 'Monthly', after: 'Daily' }
+          ],
+          problem:
+            'Customer success teams had limited visibility into at-risk accounts until after cancellations occurred.',
+          approach:
+            'Partnered with success and sales leaders to define risk signals, built a churn model, and integrated scores into their CRM.',
+          solution:
+            'Daily-updated risk scores with explainable drivers surfaced directly in the tools CSMs used every day.',
+          impact:
+            'Enabled targeted outreach, better renewal forecasting, and a measurable uplift in retention for the pilot segment.'
+        },
+        {
+          id: 'manufacturing-quality',
+          title: 'Manufacturing Quality Anomaly Detection',
+          context:
+            'Industrial client facing costly defects and rework across several production lines with complex sensor data.',
+          role: 'Data Engineer & Architect',
+          stack: ['Azure', 'Event Hubs', 'Spark Streaming', 'Kafka', 'Grafana'],
+          metrics: [
+            { label: 'Defect rate', before: 'Baseline', after: '-15%' },
+            { label: 'Time to detect issues', before: 'Hours', after: 'Minutes' }
+          ],
+          problem:
+            'Quality issues were identified too late, after large batches were produced, leading to waste and delays.',
+          approach:
+            'Built a streaming data foundation, feature pipelines, and unsupervised detection models for live production telemetry.',
+          solution:
+            'Real-time anomaly alerts integrated into existing monitoring tools with clear next-step playbooks.',
+          impact:
+            'Reduced unplanned downtime and scrap while giving process engineers a deeper view into line health.'
+        }
+      ];
+
+      const PROJECT_TAGS = ['All', 'Data Engineering', 'MLOps', 'Analytics', 'GenAI', 'Dashboards'];
+
+      const PROJECTS = [
+        {
+          id: 'ml-platform-starter',
+          title: 'ML Platform Starter Kit',
+          tagline: 'Opinionated template for production-ready ML projects.',
+          tags: ['MLOps', 'Data Engineering'],
+          tech: ['Python', 'Docker', 'CI/CD'],
+          links: {
+            github: '#',
+            demo: '#'
+          }
+        },
+        {
+          id: 'genai-rag-assistant',
+          title: 'GenAI RAG Assistant',
+          tagline: 'LLM-powered knowledge assistant with retrieval-augmented generation.',
+          tags: ['GenAI', 'Analytics'],
+          tech: ['Python', 'Vector DB', 'LLM API'],
+          links: {
+            github: '#',
+            demo: '#'
+          }
+        },
+        {
+          id: 'cloud-cost-dashboard',
+          title: 'Cloud Cost Intelligence Dashboard',
+          tagline: 'FinOps-style view on cloud consumption and savings opportunities.',
+          tags: ['Dashboards', 'Analytics'],
+          tech: ['Power BI', 'SQL', 'Azure Cost'],
+          links: {
+            github: '#',
+            demo: '#'
+          }
+        }
+      ];
+
+      const TIMELINE = [
+        {
+          id: 'role1',
+          period: '2022 – Present',
+          title: 'Data & AI Engineer / Consultant',
+          org: 'Consulting & Enterprise Clients',
+          summary:
+            'Leading end-to-end data & AI initiatives from discovery to production across retail, SaaS, and manufacturing.',
+          outcomes: [
+            'Owned delivery of multi-cloud data platforms and ML solutions.',
+            'Partnered with product and business stakeholders to define KPIs and adoption plans.'
+          ]
+        },
+        {
+          id: 'role2',
+          period: '2020 – 2022',
+          title: 'Data Engineer',
+          org: 'Enterprise Analytics Team',
+          summary:
+            'Built reliable data pipelines and analytical models that powered reporting, experimentation, and ML pilots.',
+          outcomes: [
+            'Improved reliability and observability of core ETL workloads.',
+            'Collaborated with analysts and data scientists to productionize successful prototypes.'
+          ]
+        }
+      ];
+
+      const INSIGHTS = [
+        {
+          id: 'insight1',
+          title: 'From Dashboards to Decisions: Framing Data Work Around Business Impact',
+          type: 'Blog',
+          summary:
+            'Practical patterns to translate loosely defined business questions into scoped, outcome-focused analytics projects.',
+          link: '#'
+        },
+        {
+          id: 'insight2',
+          title: 'Shipping ML: Lessons from Taking Models to Production',
+          type: 'Talk',
+          summary:
+            'A field guide to the non-technical work—stakeholders, expectations, and iteration—that makes ML projects successful.',
+          link: '#'
+        },
+        {
+          id: 'insight3',
+          title: 'Designing Data Platforms That Grow with Your Use Cases',
+          type: 'Article',
+          summary:
+            'Principles for building data platforms that can support analytics today and AI workloads tomorrow.',
+          link: '#'
+        }
+      ];
+
+      const QUICK_STATS = [
+        { label: 'Years in Data & AI', value: '4+' },
+        { label: 'Client Projects Delivered', value: '15+' },
+        { label: 'Industries', value: 'Retail, SaaS, Manufacturing' },
+        { label: 'Clouds', value: 'Azure & AWS' }
+      ];
+
+      // ---- Helpers ----
+
+      const scrollToId = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const navOffset = 72;
+        const rect = el.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = rect.top + scrollTop - navOffset;
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      };
+
+      // ---- Layout Components ----
+
+      const Navbar = ({ onNavClick, theme, toggleTheme }) => {
+        const [open, setOpen] = useState(false);
+        const links = [
+          { id: 'about', label: 'About' },
+          { id: 'experience', label: 'Experience' },
+          { id: 'case-studies', label: 'Case Studies' },
+          { id: 'projects', label: 'Projects' },
+          { id: 'skills', label: 'Skills' },
+          { id: 'insights', label: 'Insights' },
+          { id: 'contact', label: 'Contact' }
+        ];
+
+        const handleNav = (id) => {
+          onNavClick(id);
+          setOpen(false);
+        };
+
+        return (
+          <header className="nav">
+            <div className="nav__inner">
+              <div className="nav__brand" onClick={() => handleNav('about')}>
+                <span className="nav__brand-mark">{'<'}</span>
+                <span className="nav__brand-text">DataAIConsultant</span>
+                <span className="nav__brand-mark">{'/>'}</span>
+              </div>
+
+              <nav className="nav__links">
+                {links.map((link) => (
+                  <button
+                    key={link.id}
+                    className="nav__link"
+                    onClick={() => handleNav(link.id)}
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </nav>
+
+              <div className="nav__actions">
+                <button
+                  className="nav__theme-toggle"
+                  onClick={toggleTheme}
+                  aria-label="Toggle dark / light theme"
+                >
+                  {theme === 'dark' ? '☾' : '☀'}
+                </button>
+                <button
+                  className="nav__menu"
+                  onClick={() => setOpen((v) => !v)}
+                  aria-label="Toggle navigation"
+                >
+                  ☰
+                </button>
+              </div>
+            </div>
+
+            {open && (
+              <div className="nav__mobile">
+                {links.map((link) => (
+                  <button
+                    key={link.id}
+                    className="nav__mobile-link"
+                    onClick={() => handleNav(link.id)}
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </header>
+        );
+      };
+
+      const Section = ({ id, title, eyebrow, children }) => (
+        <section id={id} className="section">
+          <div className="section__inner">
+            <header className="section__header">
+              {eyebrow && <p className="section__eyebrow">{eyebrow}</p>}
+              <h2 className="section__title">{title}</h2>
+            </header>
+            <div className="section__content">{children}</div>
+          </div>
+        </section>
+      );
+
+      // ---- Hero ----
+
+      const Hero = () => (
+        <section className="hero">
+          <div className="hero__overlay-grid" aria-hidden="true" />
+          <div className="hero__inner">
+            <div className="hero__copy">
+              <p className="hero__eyebrow">Data &amp; AI Engineer · Consultant</p>
+              <h1 className="hero__title">
+                Turning business questions
+                <br />
+                into production-grade
+                <span className="hero__title-accent"> data &amp; AI solutions.</span>
+              </h1>
+              <p className="hero__subtitle">
+                I work with product, data, and business teams to design, build, and ship data &amp; AI
+                systems that solve real problems — not just run in notebooks.
+              </p>
+              <div className="hero__actions">
+                <button
+                  className="btn btn--primary"
+                  onClick={() => scrollToId('case-studies')}
+                >
+                  View Case Studies
+                </button>
+                <button
+                  className="btn btn--ghost"
+                  onClick={() => scrollToId('contact')}
+                >
+                  Let&apos;s Talk
+                </button>
+              </div>
+              <div className="hero__stats">
+                {QUICK_STATS.map((stat) => (
+                  <div key={stat.label} className="hero__stat">
+                    <div className="hero__stat-value">{stat.value}</div>
+                    <div className="hero__stat-label">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="hero__panel">
+              <div className="console">
+                <div className="console__header">
+                  <span className="console__dot console__dot--red" />
+                  <span className="console__dot console__dot--yellow" />
+                  <span className="console__dot console__dot--green" />
+                  <span className="console__title">ai_consultant.ts</span>
+                </div>
+                <div className="console__body">
+                  <p className="console__line">
+                    <span className="console__prompt">&gt;</span>
+                    import <span className="console__token">Consultant</span> from
+                    <span className="console__string">&apos;data-ai-engineer&apos;</span>
+                  </p>
+                  <p className="console__line">
+                    <span className="console__prompt">&gt;</span>
+                    new Consultant().deliver(
+                    <span className="console__string">&apos;business impact&apos;</span>)
+                  </p>
+                  <p className="console__line console__line--muted">
+                    // pipelines, models, dashboards, and playbooks included
+                  </p>
+                </div>
+              </div>
+              <div className="hero__kpis">
+                <div className="hero__kpi-card">
+                  <div className="hero__kpi-label">Typical engagement</div>
+                  <div className="hero__kpi-value">6–12 weeks</div>
+                  <p className="hero__kpi-desc">
+                    From discovery to a first production or high-fidelity pilot.
+                  </p>
+                </div>
+                <div className="hero__kpi-card">
+                  <div className="hero__kpi-label">Focus</div>
+                  <div className="hero__kpi-value">From idea to adoption</div>
+                  <p className="hero__kpi-desc">
+                    Not just building models, but shipping solutions teams actually use.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+
+      // ---- About ----
+
+      const About = () => (
+        <Section id="about" title="About" eyebrow="Who I work best with">
+          <div className="about">
+            <div className="about__primary">
+              <p>
+                I&apos;m a Data &amp; AI Engineer with 4 years of experience helping teams move from
+                scattered data and experimental notebooks to reliable, production-grade solutions.
+              </p>
+              <p>
+                My sweet spot is at the intersection of{' '}
+                <span className="text-highlight">engineering</span>,{' '}
+                <span className="text-highlight">analytics</span>, and{' '}
+                <span className="text-highlight">consulting</span> — understanding what stakeholders
+                actually need, designing a pragmatic architecture, and then building the pipelines,
+                models, and dashboards that make it real.
+              </p>
+              <p>
+                I usually partner with product, data, and business leaders to clarify the problem,
+                define KPIs, and break work into milestones that deliver value early and often.
+              </p>
+            </div>
+            <div className="about__sidebar">
+              <h3 className="about__sidebar-title">How I typically help</h3>
+              <ul className="about__list">
+                <li>Clarify business questions and data requirements.</li>
+                <li>Design pragmatic data &amp; AI architectures.</li>
+                <li>Build and productionize data/ML pipelines.</li>
+                <li>Translate results into decisions and playbooks.</li>
+              </ul>
+            </div>
+          </div>
+        </Section>
+      );
+
+      // ---- Experience & Skills ----
+
+      const ExperienceTimeline = () => (
+        <div className="timeline">
+          {TIMELINE.map((item, index) => (
+            <div key={item.id} className="timeline__item">
+              <div className="timeline__marker" />
+              <div className="timeline__content">
+                <p className="timeline__period">{item.period}</p>
+                <h3 className="timeline__title">
+                  {item.title} · <span className="timeline__org">{item.org}</span>
+                </h3>
+                <p className="timeline__summary">{item.summary}</p>
+                <ul className="timeline__outcomes">
+                  {item.outcomes.map((o) => (
+                    <li key={o}>{o}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+
+      const SkillMatrix = () => {
+        const [active, setActive] = useState(SKILL_CATEGORIES[0]?.id ?? null);
+        const activeCategory = useMemo(
+          () => SKILL_CATEGORIES.find((c) => c.id === active) || SKILL_CATEGORIES[0],
+          [active]
+        );
+
+        return (
+          <div className="skills">
+            <div className="skills__tabs" id="skills">
+              {SKILL_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  className={
+                    'skills__tab' + (cat.id === activeCategory.id ? ' skills__tab--active' : '')
+                  }
+                  onClick={() => setActive(cat.id)}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+            <div className="skills__grid" aria-live="polite">
+              {activeCategory.items.map((item) => (
+                <div key={item.name} className="skills__card">
+                  <div className="skills__card-header">
+                    <h3 className="skills__name">{item.name}</h3>
+                    <span className="skills__level">{item.level}</span>
+                  </div>
+                  <p className="skills__usecase">{item.useCase}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      };
+
+      const ExperienceSection = () => (
+        <Section
+          id="experience"
+          title="Experience"
+          eyebrow="Where I’ve delivered data & AI work"
+        >
+          <div className="experience">
+            <ExperienceTimeline />
+          </div>
+        </Section>
+      );
+
+      const SkillsSection = () => (
+        <Section
+          id="skills"
+          title="Skills"
+          eyebrow="Technical depth with a consulting mindset"
+        >
+          <SkillMatrix />
+        </Section>
+      );
+
+      // ---- Case Studies ----
+
+      const CaseStudyCard = ({ cs, onOpen }) => (
+        <button className="case-card" onClick={() => onOpen(cs)}>
+          <div className="case-card__header">
+            <h3 className="case-card__title">{cs.title}</h3>
+            <p className="case-card__role">{cs.role}</p>
+          </div>
+          <p className="case-card__context">{cs.context}</p>
+          <div className="case-card__stack">
+            {cs.stack.map((s) => (
+              <span key={s} className="chip chip--stack">
+                {s}
+              </span>
+            ))}
+          </div>
+          <div className="case-card__metrics">
+            {cs.metrics.map((m) => (
+              <div key={m.label} className="case-card__metric">
+                <span className="case-card__metric-label">{m.label}</span>
+                <span className="case-card__metric-values">
+                  {m.before} → <span className="case-card__metric-after">{m.after}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="case-card__footer">
+            <span className="case-card__cta">View story</span>
+          </div>
+        </button>
+      );
+
+      const CaseStudyModal = ({ cs, onClose }) => {
+        useEffect(() => {
+          const onKey = (e) => e.key === 'Escape' && onClose();
+          window.addEventListener('keydown', onKey);
+          return () => window.removeEventListener('keydown', onKey);
+        }, [onClose]);
+
+        if (!cs) return null;
+
+        return (
+          <div className="modal" role="dialog" aria-modal="true">
+            <div className="modal__backdrop" onClick={onClose} />
+            <div className="modal__content">
+              <button className="modal__close" onClick={onClose} aria-label="Close">
+                ×
+              </button>
+              <p className="modal__eyebrow">Case study</p>
+              <h3 className="modal__title">{cs.title}</h3>
+              <p className="modal__role">
+                {cs.role} · {cs.stack.join(' · ')}
+              </p>
+              <p className="modal__context">{cs.context}</p>
+              <div className="modal__grid">
+                <div className="modal__column">
+                  <h4>Problem</h4>
+                  <p>{cs.problem}</p>
+                  <h4>Approach</h4>
+                  <p>{cs.approach}</p>
+                </div>
+                <div className="modal__column">
+                  <h4>Solution</h4>
+                  <p>{cs.solution}</p>
+                  <h4>Impact</h4>
+                  <p>{cs.impact}</p>
+                  <div className="modal__metrics">
+                    {cs.metrics.map((m) => (
+                      <div key={m.label} className="modal__metric">
+                        <span className="modal__metric-label">{m.label}</span>
+                        <span className="modal__metric-values">
+                          {m.before} → <span className="modal__metric-after">{m.after}</span>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="modal__diagram">
+                <div className="diagram">
+                  <div className="diagram__node">Sources</div>
+                  <div className="diagram__arrow">Pipelines</div>
+                  <div className="diagram__node">Models &amp; Metrics</div>
+                  <div className="diagram__arrow">APIs &amp; Dashboards</div>
+                  <div className="diagram__node">Decision Makers</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      const CaseStudiesSection = () => {
+        const [activeCase, setActiveCase] = useState(null);
+        return (
+          <Section
+            id="case-studies"
+            title="Case Studies"
+            eyebrow="Selected client projects & outcomes"
+          >
+            <div className="case-grid">
+              {CASE_STUDIES.map((cs) => (
+                <CaseStudyCard key={cs.id} cs={cs} onOpen={setActiveCase} />
+              ))}
+            </div>
+            <CaseStudyModal cs={activeCase} onClose={() => setActiveCase(null)} />
+          </Section>
+        );
+      };
+
+      // ---- Projects ----
+
+      const ProjectsSection = () => {
+        const [activeTag, setActiveTag] = useState('All');
+
+        const visible = useMemo(() => {
+          if (activeTag === 'All') return PROJECTS;
+          return PROJECTS.filter((p) => p.tags.includes(activeTag));
+        }, [activeTag]);
+
+        return (
+          <Section
+            id="projects"
+            title="Projects"
+            eyebrow="Tools, experiments, and OSS-style work"
+          >
+            <div className="projects">
+              <div className="projects__filters">
+                {PROJECT_TAGS.map((tag) => (
+                  <button
+                    key={tag}
+                    className={
+                      'chip chip--filter' + (tag === activeTag ? ' chip--filter-active' : '')
+                    }
+                    onClick={() => setActiveTag(tag)}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+              <div className="projects__grid">
+                {visible.map((p) => (
+                  <article key={p.id} className="project-card">
+                    <h3 className="project-card__title">{p.title}</h3>
+                    <p className="project-card__tagline">{p.tagline}</p>
+                    <div className="project-card__tags">
+                      {p.tags.map((t) => (
+                        <span key={t} className="chip chip--tag">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="project-card__tech">
+                      {p.tech.map((t) => (
+                        <span key={t} className="badge">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="project-card__links">
+                      {p.links.github && (
+                        <a
+                          href={p.links.github}
+                          className="link"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          GitHub
+                        </a>
+                      )}
+                      {p.links.demo && (
+                        <a href={p.links.demo} className="link" target="_blank" rel="noreferrer">
+                          Demo
+                        </a>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </Section>
+        );
+      };
+
+      // ---- Insights ----
+
+      const InsightsSection = () => (
+        <Section
+          id="insights"
+          title="Insights"
+          eyebrow="How I think about data & AI work"
+        >
+          <div className="insights">
+            {INSIGHTS.map((item) => (
+              <article key={item.id} className="insight-card">
+                <div className="insight-card__meta">
+                  <span className="badge badge--soft">{item.type}</span>
+                </div>
+                <h3 className="insight-card__title">{item.title}</h3>
+                <p className="insight-card__summary">{item.summary}</p>
+                {item.link && (
+                  <a href={item.link} className="link" target="_blank" rel="noreferrer">
+                    View
+                  </a>
+                )}
+              </article>
+            ))}
+          </div>
+        </Section>
+      );
+
+      // ---- Contact ----
+
+      const ContactSection = () => {
+        const [form, setForm] = useState({ name: '', email: '', message: '' });
+
+        const handleChange = (e) => {
+          const { name, value } = e.target;
+          setForm((f) => ({ ...f, [name]: value }));
+        };
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          const subject = encodeURIComponent('Data & AI project inquiry');
+          const body = encodeURIComponent(
+            `Hi,\n\nMy name is ${form.name}.\n\n${form.message}\n\nYou can reach me at: ${form.email}.\n`
+          );
+          window.location.href = `mailto:your.email@example.com?subject=${subject}&body=${body}`;
+        };
+
+        return (
+          <Section
+            id="contact"
+            title="Let’s talk about your data & AI roadmap"
+            eyebrow="Next steps"
+          >
+            <div className="contact">
+              <form className="contact__form" onSubmit={handleSubmit}>
+                <label className="field">
+                  <span className="field__label">Name</span>
+                  <input
+                    className="field__input"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </label>
+                <label className="field">
+                  <span className="field__label">Email</span>
+                  <input
+                    className="field__input"
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </label>
+                <label className="field">
+                  <span className="field__label">What would you like to explore?</span>
+                  <textarea
+                    className="field__textarea"
+                    name="message"
+                    rows="4"
+                    value={form.message}
+                    onChange={handleChange}
+                    placeholder="e.g., modernizing our data platform, exploring a GenAI assistant, or productionizing existing models."
+                    required
+                  />
+                </label>
+                <button className="btn btn--primary" type="submit">
+                  Draft email
+                </button>
+              </form>
+
+              <div className="contact__sidebar">
+                <h3 className="contact__sidebar-title">Preferred ways to connect</h3>
+                <ul className="contact__list">
+                  <li>
+                    <span className="contact__label">Email</span>
+                    <a href="mailto:your.email@example.com" className="link">
+                      your.email@example.com
+                    </a>
+                  </li>
+                  <li>
+                    <span className="contact__label">LinkedIn</span>
+                    <a href="#" className="link" target="_blank" rel="noreferrer">
+                      linkedin.com/in/your-profile
+                    </a>
+                  </li>
+                </ul>
+                <p className="contact__note">
+                  I&apos;m especially interested in engagements where we can ship something users feel
+                  within the first 6–12 weeks.
+                </p>
+              </div>
+            </div>
+          </Section>
+        );
+      };
+
+      // ---- Footer ----
+
+      const Footer = () => (
+        <footer className="footer">
+          <div className="footer__inner">
+            <span className="footer__text">
+              Built as a tech-themed data &amp; AI portfolio.
+            </span>
+            <span className="footer__text">
+              Deployed on <span className="text-highlight">GitHub Pages</span>.
+            </span>
+          </div>
+        </footer>
+      );
+
+      // ---- App ----
+
+      const App = () => {
+        const [theme, setTheme] = useState('dark');
+
+        useEffect(() => {
+          const body = document.body;
+          if (theme === 'dark') {
+            body.classList.add('body--dark');
+            body.classList.remove('body--light');
+          } else {
+            body.classList.add('body--light');
+            body.classList.remove('body--dark');
+          }
+        }, [theme]);
+
+        const toggleTheme = () =>
+          setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+
+        return (
+          <div className="app">
+            <Navbar
+              onNavClick={scrollToId}
+              theme={theme}
+              toggleTheme={toggleTheme}
+            />
+            <main>
+              <Hero />
+              <About />
+              <ExperienceSection />
+              <CaseStudiesSection />
+              <ProjectsSection />
+              <SkillsSection />
+              <InsightsSection />
+              <ContactSection />
+            </main>
+            <Footer />
+          </div>
+        );
+      };
+
+      const rootEl = document.getElementById('root');
+      const root = ReactDOM.createRoot(rootEl);
+      root.render(<App />);
+    </script>
+  </body>
+</html>
+

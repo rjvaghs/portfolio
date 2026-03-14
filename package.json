@@ -1,0 +1,22 @@
+{
+  "name": "ai-data-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A tech-themed, interactive React portfolio for a Data & AI Engineer, designed for static hosting on GitHub Pages.",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo \"Static React (CDN) site - no bundler build step required\"",
+    "deploy": "echo \"Deploy by pushing this folder to a GitHub Pages repository (see README.md)\""
+  },
+  "keywords": [
+    "portfolio",
+    "react",
+    "data-engineering",
+    "ai",
+    "github-pages"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
